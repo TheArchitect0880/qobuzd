@@ -4,6 +4,7 @@ pub mod config;
 pub mod crypto;
 pub mod error;
 pub mod player;
+pub mod proto;
 pub mod qconnect;
 pub mod token;
 pub mod types;

@@ -2,7 +2,7 @@ use anyhow::Result;
 use clap::{Parser, Subcommand};
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use tracing::{error, info, Level};
+use tracing::{error, Level};
 use tracing_subscriber::FmtSubscriber;
 
 use qobuzd::api::QobuzApi;
@@ -133,20 +133,13 @@ async fn main() -> Result<()> {
 
             println!("Starting QobuzD as '{}'...", device_name);
 
-            let mut qconnect = QConnect::start(token, device_id, device_name);
+            let qconnect = QConnect::start(token, device_id, device_name);
 
             println!("QobuzD is running. Select it in the Qobuz app to play music.");
             println!("Press Ctrl+C to stop.");
 
-            // Just forward commands to stdout for visibility
-            tokio::spawn(async move {
-                loop {
-                    if let Some(cmd) = qconnect.poll_command() {
-                        info!("Command received: {:?}", cmd);
-                    }
-                    tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
-                }
-            });
+            // QConnect handles commands internally; nothing to poll.
+            let _ = qconnect;
 
             tokio::signal::ctrl_c().await?;
             println!("\nStopped.");
