@@ -11,7 +11,6 @@ Since this is a headless CLI tool with no GUI, resource usage should be lower th
 ## Features
 
 - Qobuz Connect renderer: appears as a selectable device in the official Qobuz mobile/desktop app
-- Hand-rolled protobuf encoding/decoding for the QConnect WebSocket protocol (no protobuf dependency)
 - Login via Qobuz email/password (OAuth2)
 - Token storage and refresh via system keyring
 - Device linking support
