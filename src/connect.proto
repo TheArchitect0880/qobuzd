@@ -1,0 +1,145 @@
+syntax = "proto3";
+
+package qobuz.connect;
+
+message DeviceInfo {
+    string device_id = 1;
+    string device_name = 2;
+    string device_type = 3;
+    string firmware_version = 4;
+    string ip_address = 5;
+    int32 port = 6;
+    Capabilities capabilities = 7;
+}
+
+message Capabilities {
+    bool supports_video = 1;
+    bool supports_audio = 2;
+    bool supports_image = 3;
+    repeated string supported_formats = 4;
+}
+
+message ControlMessage {
+    string message_id = 1;
+    MessageType type = 2;
+    oneof payload {
+        PlayRequest play = 10;
+        PauseRequest pause = 11;
+        StopRequest stop = 12;
+        SeekRequest seek = 13;
+        VolumeRequest volume = 14;
+        GetStatusRequest get_status = 15;
+        LoadRequest load = 16;
+    }
+}
+
+enum MessageType {
+    UNKNOWN = 0;
+    PLAY = 1;
+    PAUSE = 2;
+    STOP = 3;
+    SEEK = 4;
+    VOLUME = 5;
+    GET_STATUS = 6;
+    LOAD = 7;
+    STATUS = 100;
+    ERROR = 101;
+    CONNECTED = 102;
+    DISCONNECTED = 103;
+}
+
+message PlayRequest {
+    string track_url = 1;
+    int64 position_ms = 2;
+}
+
+message PauseRequest {}
+
+message StopRequest {}
+
+message SeekRequest {
+    int64 position_ms = 1;
+}
+
+message VolumeRequest {
+    int32 volume = 1;  // 0-100
+    bool mute = 2;
+}
+
+message GetStatusRequest {}
+
+message LoadRequest {
+    string track_id = 1;
+    string album_id = 2;
+    int32 format_id = 3;
+    int64 position_ms = 4;
+}
+
+message ControlResponse {
+    string message_id = 1;
+    MessageType type = 2;
+    bool success = 3;
+    string error_message = 4;
+    oneof payload {
+        StatusResponse status = 10;
+    }
+}
+
+message StatusResponse {
+    PlaybackState state = 1;
+    string track_id = 2;
+    string album_id = 3;
+    string track_url = 4;
+    int64 position_ms = 5;
+    int64 duration_ms = 6;
+    int32 volume = 7;
+    bool muted = 8;
+    TrackInfo track_info = 9;
+}
+
+enum PlaybackState {
+    IDLE = 0;
+    LOADING = 1;
+    PLAYING = 2;
+    PAUSED = 3;
+    BUFFERING = 4;
+    ERROR = 5;
+}
+
+message TrackInfo {
+    string title = 1;
+    string artist = 2;
+    string album = 3;
+    string album_artist = 4;
+    int32 track_number = 5;
+    int32 disc_number = 6;
+    int64 duration_ms = 7;
+    string artwork_url = 8;
+    string format = 9;
+    int32 bit_depth = 10;
+    int32 sample_rate = 11;
+}
+
+message LinkRequest {
+    string device_id = 1;
+    string device_name = 2;
+    string device_type = 3;
+}
+
+message LinkResponse {
+    bool success = 1;
+    string link_token = 2;
+    string error_message = 3;
+}
+
+message StreamRequest {
+    string track_id = 1;
+    int32 format_id = 2;
+    int64 position_ms = 3;
+}
+
+message StreamResponse {
+    bool success = 1;
+    string stream_url = 2;
+    string error_message = 3;
+}
